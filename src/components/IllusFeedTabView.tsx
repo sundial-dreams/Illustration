@@ -138,23 +138,33 @@ export function IllusTabBar({
 interface IllusFeedTabViewProps extends PropsWithStyle {
   scrollEnabled: boolean;
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  onScrollBeginDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   tabItems: string[];
 }
 
 const ScrollContext = createContext<Omit<IllusFeedTabViewProps, 'tabItems'>>({
   onScroll: () => {},
   scrollEnabled: false,
+  onScrollBeginDrag: () => {},
 });
 
 function EmbedContextForFeed({style}: PropsWithStyle): React.ReactElement {
-  const {scrollEnabled, onScroll} = useContext(ScrollContext);
-  return <Feed scrollEnabled={scrollEnabled} onScroll={onScroll} />;
+  const {scrollEnabled, onScroll, onScrollBeginDrag} =
+    useContext(ScrollContext);
+  return (
+    <Feed
+      scrollEnabled={scrollEnabled}
+      onScrollBeginDrag={onScrollBeginDrag}
+      onScroll={onScroll}
+    />
+  );
 }
 
 export default function IllusFeedTabView({
   style,
   scrollEnabled,
   onScroll,
+  onScrollBeginDrag,
   tabItems,
 }: IllusFeedTabViewProps): React.ReactElement {
   const [current, setCurrent] = useState(0);
@@ -189,7 +199,8 @@ export default function IllusFeedTabView({
   };
 
   return (
-    <ScrollContext.Provider value={{onScroll, scrollEnabled}}>
+    <ScrollContext.Provider
+      value={{onScroll, scrollEnabled, onScrollBeginDrag}}>
       <TabView
         style={[styles.tabView, style]}
         onIndexChange={setCurrent}

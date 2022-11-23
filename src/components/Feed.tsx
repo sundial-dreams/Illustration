@@ -18,6 +18,7 @@ interface FeedProps extends PropsWithStyle {
   withPadding?: boolean;
   scrollEnabled?: boolean;
   onScroll?: (events: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  onScrollBeginDrag?: (events: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
 
 export default function Feed({
@@ -25,6 +26,7 @@ export default function Feed({
   data = feedImages,
   scrollEnabled = true,
   onScroll,
+  onScrollBeginDrag,
   style,
 }: FeedProps): React.ReactElement {
   const renderItem = useCallback(
@@ -51,6 +53,7 @@ export default function Feed({
       scrollEnabled={scrollEnabled}
       onScroll={onScroll}
       showsVerticalScrollIndicator={false}
+      onScrollBeginDrag={onScrollBeginDrag}
     />
   );
 }

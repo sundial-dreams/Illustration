@@ -37,6 +37,8 @@ const tags = [
 
 const tabItems = ['Newest', 'Popular', 'Oldest'];
 
+let oldOffsetY = 0;
+
 export default function TagDetail(): React.ReactElement {
   const route = useRoute();
   const insets = useSafeAreaInsets();
@@ -48,6 +50,10 @@ export default function TagDetail(): React.ReactElement {
   const [nestedScrollViewEnabled, setNestedScrollViewEnabled] = useState(true);
 
   const [scrollViewEnabled, setScrollViewEnabled] = useState(true);
+
+  const nestedBeginScrollOffsetY = useRef(0);
+
+  const beginScrollOffsetY = useRef(0);
 
   const source = (route.params as any).source;
   const tagName = (route.params as any).tagName;
@@ -91,32 +97,48 @@ export default function TagDetail(): React.ReactElement {
       backgroundAnimatedEvent(event);
       textOpacityAnimatedEvent(event);
       const distance = 150 + 100 - 100;
-      if (
-        offsetY >= distance &&
-        !nestedScrollViewEnabled &&
-        scrollViewEnabled
-      ) {
-        // setNestedScrollViewEnabled(true);
-        // setScrollViewEnabled(false);
+      const direction = offsetY - beginScrollOffsetY.current;
+      return;
+      if (direction > 0) {
+        scrollView.current!.scrollTo({y: distance});
+        return;
       }
+
+      scrollView.current!.scrollTo({y: -100});
+      return;
     },
-    [
-      backgroundAnimatedEvent,
-      nestedScrollViewEnabled,
-      scrollViewEnabled,
-      textOpacityAnimatedEvent,
-    ],
+    [backgroundAnimatedEvent, textOpacityAnimatedEvent],
   );
 
   const handleNestedScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const offsetY = event.nativeEvent.contentOffset.y;
-      if (offsetY < 0 && nestedScrollViewEnabled && !scrollViewEnabled) {
-        // setNestedScrollViewEnabled(false);
-        // setScrollViewEnabled(true);
+      const distance = 150 + 100 - 100;
+      const direction = offsetY - nestedBeginScrollOffsetY.current;
+      if (nestedBeginScrollOffsetY.current <= 5 && direction > 0) {
+        scrollView.current!.scrollTo({y: distance});
+        return;
+      }
+
+      if (offsetY < 0) {
+        scrollView.current!.scrollTo({y: -100});
       }
     },
-    [nestedScrollViewEnabled, scrollViewEnabled],
+    [],
+  );
+
+  const handleNestedScrollBeginDrag = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      nestedBeginScrollOffsetY.current = event.nativeEvent.contentOffset.y;
+    },
+    [],
+  );
+
+  const handleScrollBeginDrag = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      beginScrollOffsetY.current = event.nativeEvent.contentOffset.y;
+    },
+    [],
   );
 
   return (
@@ -142,7 +164,7 @@ export default function TagDetail(): React.ReactElement {
         }}
         scrollEventThrottle={1}
         onScroll={handleScroll}
-        scrollEnabled={scrollViewEnabled}
+        scrollEnabled={true}
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[3]}
         bounces={false}
@@ -176,6 +198,7 @@ export default function TagDetail(): React.ReactElement {
           tabItems={tabItems}
           scrollEnabled={nestedScrollViewEnabled}
           onScroll={handleNestedScroll}
+          onScrollBeginDrag={handleNestedScrollBeginDrag}
         />
       </ScrollView>
     </View>
