@@ -1,5 +1,5 @@
-import React, {useCallback, useMemo} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {StyleSheet, View} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -12,56 +12,57 @@ import Drawer from 'react-native-drawer';
 
 import Tags from './src/screens/Tags';
 import Home from './src/screens/Home';
-import Navigator from './src/components/Navigator';
-import {IStore, updateCurrentScreen, updateOpenDrawer} from './src/store/store';
+import AppTabBar from './src/components/common/AppTabBar';
+import {
+  IStore,
+  updateCurrentScreenIndex,
+  updateOpenDrawer,
+} from './src/store/store';
 import store from './src/store';
-import AppHeaderBar from './src/components/AppHeaderBar';
+import AppHeaderBar from './src/components/HeaderBar/AppHeaderBar';
 import {DefaultBackgroundColor} from './src/styles';
 import Find from './src/screens/Find';
 import Follows from './src/screens/Follows';
 import Illus from './src/screens/Illus';
-import DrawerPanel from './src/components/DrawerPanel';
+import DrawerPanel from './src/components/DrawerPanel/DrawerPanel';
 import {Layout} from './src/utils';
 import Profile from './src/screens/Profile';
-import TagDetail from './src/screens/TagDetail';
-
-const Routes = [{key: 'Home'}, {key: 'Tags'}, {key: 'Find'}, {key: 'Follows'}];
-const Titles = ['Discover', 'Tags', 'Find', 'Follows'];
+import {MainSceneRoutes} from './src/utils/config';
+import Test from './src/screens/Test';
+import TagList from './src/screens/TagList';
+import FindList from './src/screens/FindList';
+import Following from './src/screens/Following';
+import Explore from './src/screens/Explore';
+import IllusViewer from './src/screens/Illus/IllusViewer';
+import ImageTransformer from './src/screens/Test/ImageTransformer';
 
 const Stack = createNativeStackNavigator();
 
-function AppScreen(): React.ReactElement {
-  const {currentScreen} = useSelector((state: IStore) => state.uiState);
+const scenes = SceneMap({
+  Home,
+  Tags,
+  Find,
+  Follows,
+});
+
+function Screens(): React.ReactElement {
+  const {currentScreenIndex} = useSelector((state: IStore) => state.uiState);
   const dispatch = useDispatch();
-
-  const renderScene = useMemo(
-    () =>
-      SceneMap({
-        Home: Home,
-        Tags: Tags,
-        Find: Find,
-        Follows: Follows,
-      }),
-    [],
-  );
-
-  const renderTabBar = () => {
-    return <Navigator />;
-  };
+  const routes = MainSceneRoutes;
 
   return (
     <>
-      <AppHeaderBar title={Titles[currentScreen]} />
+      <AppHeaderBar title={routes[currentScreenIndex].title} />
       <TabView
-        onIndexChange={index => dispatch(updateCurrentScreen(index))}
+        onIndexChange={index => dispatch(updateCurrentScreenIndex(index))}
         navigationState={{
-          index: currentScreen,
-          routes: Routes,
+          index: currentScreenIndex,
+          routes: routes,
         }}
         lazy
         tabBarPosition="bottom"
-        renderTabBar={renderTabBar}
-        renderScene={renderScene}
+        renderTabBar={AppTabBar}
+        renderScene={scenes}
       />
     </>
   );
@@ -86,10 +87,15 @@ function App(): React.ReactElement {
             <Stack.Navigator
               screenOptions={{headerShown: false}}
               initialRouteName="App">
-              <Stack.Screen name={'App'} component={AppScreen} />
+              <Stack.Screen name={'App'} component={Screens} />
               <Stack.Screen name={'Illus'} component={Illus} />
               <Stack.Screen name={'Profile'} component={Profile} />
-              <Stack.Screen name={'TagDetail'} component={TagDetail} />
+              <Stack.Screen name={'TagDetail'} component={TagList} />
+              <Stack.Screen name={'FindList'} component={FindList} />
+              <Stack.Screen name={'Following'} component={Following} />
+              <Stack.Screen name={'Explore'} component={Explore} />
+              <Stack.Screen name={'IllusViewer'} component={IllusViewer} />
+              <Stack.Screen name={'Test'} component={Test} />
             </Stack.Navigator>
           </Drawer>
         </NavigationContainer>

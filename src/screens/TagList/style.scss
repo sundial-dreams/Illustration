@@ -1,0 +1,104 @@
+@import "../../styles/global.scss";
+
+.tag_list_screen {
+  @include screen;
+}
+
+.tag_cover_block {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 150px;
+}
+
+.tag_cover {
+  width: 100%;
+  height: 150px;
+  resize-mode: cover;
+}
+
+.header_bar {
+  height: 100px;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $padding-horizontal / 2;
+  background-color: transparent;
+}
+
+.header_bar_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+}
+
+.header_bar_tag_name {
+  @include font(20)
+}
+
+.none {
+  width: 24px;
+  height: 100%;
+}
+
+.tag_content {
+  width: 100%;
+  padding-top: 50px;
+}
+
+.tag_name_block {
+  width: 100%;
+  padding: 5px 0;
+  background-color: white;
+  align-items: center;
+}
+
+.tag_name {
+  @include font(26px)
+}
+
+.tag_detail {
+  padding-top: 5px;
+  align-items: center;
+  background-color: white;
+}
+
+.tag_total {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.tag_total_text {
+  @include font(14px)
+}
+
+.tag_description_block {
+  padding: 5px $padding-horizontal;
+  align-items: center;
+  background-color: white;
+}
+
+.tag_description_text {
+  @include font(14px, #c7c7c7, normal);
+  text-align: center;
+}
+
+.related_tags_block {
+  padding: 10px $padding-horizontal;
+  background-color: white;
+}
+
+.tags {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.tag {
+  margin-right: 10px;
+}

@@ -1,0 +1,58 @@
+@import "../../styles/global.scss";
+
+
+.find_screen {
+  @include screen;
+  padding: 0 $padding-horizontal;
+}
+
+.tags_block {
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.tag_item {
+  margin-right: 10px;
+}
+
+.history_block {
+  width: 100%;
+  margin-top: 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.delete_button_block {
+  @extend %flex-center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.cpm_search_box {
+  border-radius: 10px;
+  overflow: hidden;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #EFEFEF;
+}
+
+.search_box_input {
+  @include font(16);
+  background-color: #EFEFEF;
+  padding-left: 10px;
+}
+
+.search_box_icon_block {
+  @extend %flex-center;
+}
+
+.cpm_delete_button {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.delete_button_text {
+  @include font(14, #DADADA);
+  margin-left: 5px;
+}

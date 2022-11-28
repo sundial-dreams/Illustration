@@ -1,0 +1,34 @@
+@import "../../styles/global.scss";
+
+.header_bar {
+  width: 100%;
+  height: 100px;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  background-color: white;
+}
+
+.header_bar_title {
+  @include font(24px)
+}
+
+.menu {
+  margin-left: 28px;
+}
+
+.avatar {
+  margin-right: 28px;
+}
+
+.header_bar_normal {
+  @extend .header_bar;
+  justify-content: center;
+}
+
+.back_button_block {
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  left: $padding-horizontal / 2;
+}

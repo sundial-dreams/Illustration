@@ -1,29 +1,44 @@
-import React, {PropsWithChildren, useState} from 'react';
+import React, {PropsWithChildren, useCallback, useState} from 'react';
 
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {Text, TextInput, TouchableWithoutFeedback, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ContentWidth} from '../../utils';
-import {DefaultFontStyle, FlexCenterStyle} from '../../styles';
 import {PropsWithStyle} from '../../utils/interface';
+import {useNavigation} from '@react-navigation/native';
+import scss from './style.scss';
 
 export function SearchBox({style}: PropsWithStyle): React.ReactElement {
   const [text, setText] = useState('');
+  const navigation = useNavigation();
+
+  const onSubmitEditing = useCallback(() => {
+    // @ts-ignore
+    navigation.push('FindList', {value: text});
+  }, [text]);
+
   return (
-    <View style={[stylesOfSearchBox.searchBox, style]}>
+    <View
+      style={[
+        scss.cpm_search_box,
+        {width: ContentWidth, height: IconSize},
+        style,
+      ]}>
       <TextInput
         placeholder={'tag, user'}
         placeholderTextColor={'#b7b7b7'}
-        style={stylesOfSearchBox.textInput}
+        style={[
+          scss.search_box_input,
+          {width: ContentWidth - IconSize, height: IconSize},
+        ]}
         value={text}
+        onSubmitEditing={onSubmitEditing}
         onChangeText={t => setText(t)}
       />
-      <View style={stylesOfSearchBox.iconWrapper}>
+      <View
+        style={[
+          scss.search_box_icon_block,
+          {width: IconSize, height: IconSize},
+        ]}>
         <Icon name={'magnify'} size={24} color={'black'} />
       </View>
     </View>
@@ -32,31 +47,6 @@ export function SearchBox({style}: PropsWithStyle): React.ReactElement {
 
 const IconSize = 36;
 
-const stylesOfSearchBox = StyleSheet.create({
-  searchBox: {
-    width: ContentWidth,
-    height: IconSize,
-    borderRadius: 10,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#EFEFEF',
-  },
-  textInput: {
-    width: ContentWidth - IconSize,
-    height: IconSize,
-    backgroundColor: '#EFEFEF',
-    paddingLeft: 10,
-    ...DefaultFontStyle,
-    fontSize: 16,
-  },
-  iconWrapper: {
-    width: IconSize,
-    height: IconSize,
-    ...FlexCenterStyle,
-  },
-});
-
 export function DeleteButton({
   onTouch,
   children,
@@ -64,30 +54,17 @@ export function DeleteButton({
 }: {onTouch: () => void} & PropsWithChildren & PropsWithStyle) {
   return (
     <TouchableWithoutFeedback onPress={onTouch}>
-      <View style={[stylesOfDeleteButton.deleteButton, style]}>
+      <View style={[scss.cpm_delete_button, style]}>
         <Icon
           suppressHighlighting={true}
           name={'trash-can'}
           size={16}
           color={'#DADADA'}
         />
-        <Text style={stylesOfDeleteButton.text} suppressHighlighting={true}>
+        <Text style={scss.delete_button_text} suppressHighlighting={true}>
           {children}
         </Text>
       </View>
     </TouchableWithoutFeedback>
   );
 }
-
-const stylesOfDeleteButton = StyleSheet.create({
-  deleteButton: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  text: {
-    ...DefaultFontStyle,
-    fontSize: 14,
-    color: '#DADADA',
-    marginLeft: 5,
-  },
-});

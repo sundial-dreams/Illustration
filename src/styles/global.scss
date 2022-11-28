@@ -1,0 +1,29 @@
+$primary-font: 'Times New Roman';
+$padding-horizontal: 28px;
+$header_bar_height: 100px;
+
+%flex-center {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin screen($backgroundColor: white) {
+  background-color: $backgroundColor;
+  width: 100%;
+  height: 100%;
+}
+
+@mixin font($font-size: 16, $color: black, $font-weight: bold) {
+  font-family: $primary-font;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  color: $color;
+}
+
+@mixin shadow($blur: 20px, $opacity: 0.2, $color: black, $offset-width: 0, $offset-height: 0) {
+  shadow-opacity: $opacity;
+  shadow-color: $color;
+  shadow-radius: $blur;
+  shadow-offset: $offset-width $offset-height;
+}

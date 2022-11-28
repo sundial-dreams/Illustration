@@ -1,0 +1,102 @@
+@import "../../styles/global.scss";
+
+.home_screen {
+  @include screen;
+}
+
+.illus_lists_block {
+  width: 100%;
+  padding-top: 10px;
+}
+
+.illus_lists_title {
+  margin-left: $padding-horizontal;
+}
+
+.explore_title {
+  padding-bottom: 10px;
+  margin-left: $padding-horizontal;
+  background-color: white;
+}
+
+
+.cmp_illus_cover {
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.cover_image {
+  width: 100%;
+  height: 100%;
+  resize-mode: cover;
+}
+
+.cover_content {
+  position: absolute;
+  bottom: 0;
+  height: 70px;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cover_text_block {
+  height: 50px;
+  justify-content: space-between;
+  margin-left: 12px;
+}
+
+.cover_title {
+  @include font(20px, white);
+}
+
+.cover_date {
+  @include font(16px, white);
+}
+
+.cover_icon_block {
+  @extend %flex-center;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: white;
+  margin-right: 12px;
+}
+
+.cover_icon_shadow {
+  @include shadow(10px);
+}
+
+.cover_shadow {
+  @include shadow(10px, 0.1)
+}
+
+.illus_lists {
+  width: 100%;
+  height: 100%;
+}
+
+.list_view_block {
+  height: 80%;
+}
+
+.list_view {
+  padding-top: 18px;
+  padding-left: $padding-horizontal;
+}
+
+.list_indicator_block {
+  @extend %flex-center;
+  margin-top: 5px;
+}
+
+.indicator_dot {
+  height: 5px;
+  width: 5px;
+  border-radius: 3px;
+  margin: 0 4px;
+  background-color: #c7c7c7;
+}
+

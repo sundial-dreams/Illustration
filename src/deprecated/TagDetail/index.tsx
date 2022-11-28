@@ -9,7 +9,7 @@ import {
   NativeScrollEvent,
   Animated,
 } from 'react-native';
-import {BackButton, Tag, Title} from '../../components';
+import {BackButton, Tag, Title} from '../../components/common';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   DefaultBackgroundColor,
@@ -17,11 +17,10 @@ import {
   PaddingHorizontal,
 } from '../../styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IllusFeedTabView, {IllusTabBar} from '../../components/IllusFeedTabView';
+import IllusFeedTabView, {IllusTabBar} from '../IllusFeedTabView';
 import {useRoute} from '@react-navigation/native';
 import useAnimatedValue from '../../utils/hooks';
 import {createAnimatedEventForScrollY} from '../../utils/animated';
-import Feed from '../../components/Feed';
 const image2 = require('../../assets/images/2.jpg');
 
 const tags = [
@@ -88,7 +87,7 @@ export default function TagDetail(): React.ReactElement {
 
   useEffect(() => {
     const scrollElem = scrollView.current;
-    scrollElem!.scrollTo({y: -100});
+    scrollElem!.scrollTo({y: -100, animated: false});
   }, []);
 
   const handleScroll = useCallback(
@@ -98,13 +97,6 @@ export default function TagDetail(): React.ReactElement {
       textOpacityAnimatedEvent(event);
       const distance = 150 + 100 - 100;
       const direction = offsetY - beginScrollOffsetY.current;
-      return;
-      if (direction > 0) {
-        scrollView.current!.scrollTo({y: distance});
-        return;
-      }
-
-      scrollView.current!.scrollTo({y: -100});
       return;
     },
     [backgroundAnimatedEvent, textOpacityAnimatedEvent],
@@ -145,12 +137,15 @@ export default function TagDetail(): React.ReactElement {
     <View style={styles.tagDetail}>
       <Animated.View
         style={[
-          styles.header,
+          styles.headerBar,
           {paddingTop: insets.top, backgroundColor: animatedBackgroundStyle},
         ]}>
         <BackButton />
         <Animated.Text
-          style={[styles.headerTagName, {opacity: animatedTextOpacityStyle}]}>
+          style={[
+            styles.headerBarTagName,
+            {opacity: animatedTextOpacityStyle},
+          ]}>
           #{tagName}
         </Animated.Text>
         <View style={styles.none} />
@@ -169,31 +164,6 @@ export default function TagDetail(): React.ReactElement {
         stickyHeaderIndices={[3]}
         bounces={false}
         contentInset={{top: 100}}>
-        <View style={styles.tagNameWrapper}>
-          <Text style={styles.tagName}>#{tagName}</Text>
-        </View>
-        <View style={styles.detail}>
-          <View style={styles.total}>
-            <Icon name={'image'} size={14} color={'black'} />
-            <Text style={styles.totalValue}> 13000</Text>
-          </View>
-          <View style={styles.description}>
-            <Text style={styles.descriptionText}>
-              Genshin Impact is an anime-style open world adventure game with a
-              unique elemental reaction mechanism.
-            </Text>
-          </View>
-        </View>
-        <View style={styles.relatedTagsWrapper}>
-          <Title>{'Related Tags'}</Title>
-          <View style={styles.tags}>
-            {tags.map((v, i) => (
-              <Tag style={styles.tag} key={i} withBackground={true} size={14}>
-                {v}
-              </Tag>
-            ))}
-          </View>
-        </View>
         <IllusFeedTabView
           tabItems={tabItems}
           scrollEnabled={nestedScrollViewEnabled}
@@ -211,7 +181,7 @@ const styles = StyleSheet.create({
     height: '100%',
     ...DefaultBackgroundColor,
   },
-  header: {
+  headerBar: {
     height: 100,
     width: '100%',
     flexDirection: 'row',
@@ -222,7 +192,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 10,
   },
-  headerTagName: {
+  headerBarTagName: {
     ...DefaultFontStyle,
     fontSize: 20,
     color: 'black',

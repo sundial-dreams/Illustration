@@ -9,16 +9,12 @@ import {
   View,
 } from 'react-native';
 import {PropsWithStyle} from '../../utils/interface';
-import {
-  DefaultFontStyle,
-  FlexCenterStyle,
-  newShadow,
-  PaddingHorizontal,
-} from '../../styles';
+import {PaddingHorizontal} from '../../styles';
 import {Layout} from '../../utils';
 import DropShadow from 'react-native-drop-shadow';
 import {useTouchBounceAnimated} from '../../utils/hooks';
 import {useNavigation} from '@react-navigation/native';
+import scss from './style.scss';
 
 export enum IllusCardTypes {
   Small,
@@ -45,7 +41,7 @@ function useWidthWithType(type: IllusCardTypes): number {
   }, [type]);
 }
 
-export interface IllusCardProps extends PropsWithStyle {
+export interface IllusTagCoverProps extends PropsWithStyle {
   source: ImageSourcePropType;
   type: IllusCardTypes;
   name: string;
@@ -53,13 +49,13 @@ export interface IllusCardProps extends PropsWithStyle {
   onTouch?: () => void;
 }
 
-export function IllusCard({
+export function IllusTagCover({
   source,
   name,
   total,
   type,
   onTouch,
-}: IllusCardProps): React.ReactElement {
+}: IllusTagCoverProps): React.ReactElement {
   const width = useWidthWithType(type);
   const navigation = useNavigation();
   const handleIllusCardTouch = useCallback(() => {
@@ -72,16 +68,13 @@ export function IllusCard({
   }, [name, navigation, source]);
 
   return (
-    <View style={[stylesOfIllusCard.illusCard, {width}]}>
-      <ImageBackground style={stylesOfIllusCard.image} source={source}>
+    <View style={[scss.cmp_illus_cover, {width, marginTop: gap}]}>
+      <ImageBackground style={scss.cover_image} source={source}>
         <TouchableWithoutFeedback onPress={handleIllusCardTouch}>
-          <View style={stylesOfIllusCard.mask}>
-            <View style={stylesOfIllusCard.textWrapper}>
-              <Text style={stylesOfIllusCard.text}>{name}</Text>
-              <Text
-                style={[stylesOfIllusCard.text, stylesOfIllusCard.totalText]}>
-                +{total}
-              </Text>
+          <View style={scss.image_mask}>
+            <View style={scss.cover_tag_block}>
+              <Text style={scss.cover_text}>{name}</Text>
+              <Text style={scss.cover_total_text}>+{total}</Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -89,41 +82,6 @@ export function IllusCard({
     </View>
   );
 }
-const stylesOfIllusCard = StyleSheet.create({
-  illusCard: {
-    height: 110,
-    overflow: 'hidden',
-    borderRadius: 12,
-    marginTop: gap,
-  },
-  image: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  mask: {
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    width: '100%',
-    height: '100%',
-    flexDirection: 'row',
-    ...FlexCenterStyle,
-  },
-  textWrapper: {
-    width: '100%',
-  },
-  text: {
-    ...DefaultFontStyle,
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    width: '100%',
-  },
-  totalText: {
-    fontSize: 18,
-    marginTop: 8,
-  },
-});
 
 interface FancyButtonProps extends PropsWithStyle, PropsWithChildren {
   onTouch?: () => void;
@@ -140,33 +98,16 @@ export function FancyButton({
   );
   return (
     <Animated.View style={scaleAnimatedStyle}>
-      <DropShadow style={stylesOfFancyButton.shadow}>
+      <DropShadow style={scss.fancy_button_shadow}>
         <TouchableWithoutFeedback
           onPress={onTouch}
           onPressIn={onTouchIn}
           onPressOut={onTouchOut}>
-          <View style={stylesOfFancyButton.fancyButton}>
-            <Text style={stylesOfFancyButton.text}>{children}</Text>
+          <View style={scss.cmp_fancy_button}>
+            <Text style={scss.fancy_button_text}>{children}</Text>
           </View>
         </TouchableWithoutFeedback>
       </DropShadow>
     </Animated.View>
   );
 }
-
-const stylesOfFancyButton = StyleSheet.create({
-  fancyButton: {
-    width: 120,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: 'black',
-    ...FlexCenterStyle,
-  },
-  text: {
-    ...DefaultFontStyle,
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  shadow: newShadow(10, 0.2),
-});

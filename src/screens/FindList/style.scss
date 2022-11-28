@@ -1,0 +1,23 @@
+@import "../../styles/global.scss";
+
+.find_list_screen {
+  @include screen;
+}
+
+.header_bar {
+  height: 100px;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: $padding-horizontal / 2;
+  padding-right: $padding-horizontal;
+}
+
+.search_input {
+  @include font(16px);
+  height: 36px;
+  background-color: #EFEFEF;
+  padding-left: 10px;
+  border-radius: 10px;
+}

@@ -1,17 +1,11 @@
 import React, {useRef} from 'react';
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {Animated, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {Layout} from '../../utils';
 import {PropsWithOnTouch, PropsWithStyle} from '../../utils/interface';
-import {DefaultFontStyle, FlexCenterStyle, newShadow} from '../../styles';
 import DropShadow from 'react-native-drop-shadow';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTouchBounceAnimated} from '../../utils/hooks';
+import scss from './style.scss';
 
 export function IllusProgressBar({
   total,
@@ -19,74 +13,10 @@ export function IllusProgressBar({
 }: {total: number; current: number} & PropsWithStyle): React.ReactElement {
   return (
     <View
-      style={[
-        stylesOfProgress.progressBar,
-        {width: (current / total) * Layout.width},
-      ]}
+      style={[scss.cpm_progress_bar, {width: (current / total) * Layout.width}]}
     />
   );
 }
-
-const stylesOfProgress = StyleSheet.create({
-  progressBar: {
-    height: 2,
-    width: 0,
-    backgroundColor: 'black',
-  },
-});
-
-export function FollowButton({
-  followed,
-  onTouch,
-}: {
-  followed: boolean;
-  onTouch?: () => void;
-}): React.ReactElement {
-  const scaleAnimatedValue = useRef(new Animated.Value(0)).current;
-  const [onTouchIn, onTouchOut, scaleAnimatedStyle] = useTouchBounceAnimated(
-    scaleAnimatedValue,
-    0.95,
-  );
-  return (
-    <DropShadow style={stylesOfFollowButton.shadow}>
-      <TouchableWithoutFeedback
-        onPress={onTouch}
-        onPressOut={onTouchOut}
-        onPressIn={onTouchIn}>
-        <Animated.View
-          style={[
-            stylesOfFollowButton.followButton,
-            scaleAnimatedStyle,
-            followed && {backgroundColor: 'black'},
-          ]}>
-          <Text
-            style={[stylesOfFollowButton.text, followed && {color: 'white'}]}>
-            {followed ? 'Following' : 'Follow'}
-          </Text>
-        </Animated.View>
-      </TouchableWithoutFeedback>
-    </DropShadow>
-  );
-}
-
-const stylesOfFollowButton = StyleSheet.create({
-  followButton: {
-    width: 60,
-    height: 20,
-    borderRadius: 5,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    backgroundColor: 'white',
-    ...FlexCenterStyle,
-  },
-  text: {
-    ...DefaultFontStyle,
-    fontSize: 12,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  shadow: newShadow(5, 0.1),
-});
 
 export function DownLoadButton({
   onTouch,
@@ -98,24 +28,20 @@ export function DownLoadButton({
     0.95,
   );
   return (
-    <DropShadow style={stylesOfDownLoadButton.shadow}>
+    <DropShadow style={scss.download_button_shadow}>
       <TouchableWithoutFeedback
         onPress={onTouch}
         onPressOut={onTouchOut}
         onPressIn={onTouchIn}>
         <Animated.View
-          style={[
-            stylesOfDownLoadButton.downloadButton,
-            style,
-            scaleAnimatedStyle,
-          ]}>
+          style={[scss.cmp_download_button, style, scaleAnimatedStyle]}>
           <Icon
             name={'tray-arrow-down'}
             size={14}
             color={'white'}
             suppressHighlighting={true}
           />
-          <Text suppressHighlighting={true} style={stylesOfDownLoadButton.text}>
+          <Text suppressHighlighting={true} style={scss.download_button_text}>
             Download
           </Text>
         </Animated.View>
@@ -123,26 +49,6 @@ export function DownLoadButton({
     </DropShadow>
   );
 }
-
-const stylesOfDownLoadButton = StyleSheet.create({
-  downloadButton: {
-    width: 100,
-    height: 30,
-    borderRadius: 20,
-    backgroundColor: 'black',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  text: {
-    ...DefaultFontStyle,
-    fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  shadow: newShadow(5, 0.1),
-});
 
 export function LikeButton({
   liked,
@@ -156,13 +62,13 @@ export function LikeButton({
   );
   const name = liked ? 'cards-heart' : 'cards-heart-outline';
   return (
-    <DropShadow style={stylesOfLikeButton.shadow}>
+    <DropShadow style={scss.like_button_shadow}>
       <TouchableWithoutFeedback
         onPress={onTouch}
         onPressIn={onTouchIn}
         onPressOut={onTouchOut}>
         <Animated.View
-          style={[stylesOfLikeButton.likeButton, style, scaleAnimatedStyle]}>
+          style={[scss.cpm_like_button, style, scaleAnimatedStyle]}>
           <Icon
             name={name}
             suppressHighlighting={true}
@@ -175,13 +81,40 @@ export function LikeButton({
   );
 }
 
-const stylesOfLikeButton = StyleSheet.create({
-  likeButton: {
-    width: 30,
-    height: 30,
-    backgroundColor: 'black',
-    borderRadius: 20,
-    ...FlexCenterStyle,
-  },
-  shadow: newShadow(5, 0.1),
-});
+interface IllusPropertiesProps {
+  publishDate: string;
+  views: number;
+  likes: number;
+  dimensions: {
+    width: number;
+    height: number;
+  };
+}
+
+export function IllusProperties({
+  publishDate,
+  views,
+  likes,
+  dimensions,
+}: IllusPropertiesProps): React.ReactElement {
+  return (
+    <View style={scss.cmp_illus_properties}>
+      <View style={scss.illus_data_detail}>
+        <Text style={scss.data_detail_text}>{publishDate + ' '}</Text>
+        <Text style={[scss.data_detail_text, {color: 'black'}]}>
+          | {' ' + views + ' '}
+        </Text>
+        <Text style={scss.data_detail_text}> Views </Text>
+        <Text style={[scss.data_detail_text, {color: 'black'}]}>
+          | {' ' + likes}
+        </Text>
+        <Text style={scss.data_detail_text}> Likes</Text>
+      </View>
+      <View>
+        <Text style={scss.data_detail_text}>
+          {dimensions.width}x{dimensions.height}
+        </Text>
+      </View>
+    </View>
+  );
+}

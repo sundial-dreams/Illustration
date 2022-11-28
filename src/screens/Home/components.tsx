@@ -22,6 +22,8 @@ import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
 import {ContentWidth, Layout} from '../../utils';
 import {PropsWithStyle} from '../../utils/interface';
+import scss from './style.scss';
+
 import AnimatedValue = Animated.AnimatedValue;
 
 const image1 = require('../../assets/images/6.jpg');
@@ -47,26 +49,29 @@ export function IllusListCover({
   onTouch,
 }: IllusListCoverProps): React.ReactElement {
   return (
-    <DropShadow style={stylesOfIllusListCover.shadow}>
+    <DropShadow style={scss.cover_shadow}>
       <View
         style={[
-          stylesOfIllusListCover.illusCard,
+          scss.cmp_illus_cover,
+          {
+            marginRight: isEnd ? PaddingHorizontal : PaddingHorizontal / 2,
+            width: Layout.width - PaddingHorizontal * 2,
+          },
           style,
-          {marginRight: isEnd ? PaddingHorizontal : PaddingHorizontal / 2},
         ]}>
         <TouchableWithoutFeedback onPress={onTouch}>
-          <ImageBackground style={stylesOfIllusListCover.image} source={source}>
+          <ImageBackground style={scss.cover_image} source={source}>
             <LinearGradient
-              style={stylesOfIllusListCover.content}
+              style={scss.cover_content}
               colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)']}
               start={{x: 0, y: 0}}
               end={{x: 0, y: 1}}>
-              <View style={stylesOfIllusListCover.textWrapper}>
-                <Text style={stylesOfIllusListCover.titleText}>{name}</Text>
-                <Text style={stylesOfIllusListCover.dateText}>{date}</Text>
+              <View style={scss.cover_text_block}>
+                <Text style={scss.cover_title}>{name}</Text>
+                <Text style={scss.cover_date}>{date}</Text>
               </View>
-              <DropShadow style={stylesOfIllusListCover.iconShadow}>
-                <View style={stylesOfIllusListCover.iconWrapper}>
+              <DropShadow style={scss.cover_icon_shadow}>
+                <View style={scss.cover_icon_block}>
                   <Icon name={icon} color={'black'} size={16} />
                 </View>
               </DropShadow>
@@ -77,55 +82,6 @@ export function IllusListCover({
     </DropShadow>
   );
 }
-
-const stylesOfIllusListCover = StyleSheet.create({
-  illusCard: {
-    width: Layout.width - PaddingHorizontal * 2,
-    height: 200,
-    overflow: 'hidden',
-    borderRadius: 10,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  content: {
-    position: 'absolute',
-    bottom: 0,
-    height: 70,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  textWrapper: {
-    height: 50,
-    justifyContent: 'space-between',
-    marginLeft: 12,
-  },
-  titleText: {
-    ...DefaultFontStyle,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  dateText: {
-    ...DefaultFontStyle,
-    fontSize: 16,
-    color: 'white',
-  },
-  iconWrapper: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: 'white',
-    marginRight: 12,
-    ...FlexCenterStyle,
-  },
-  iconShadow: newShadow(10),
-  shadow: newShadow(10, 0.1),
-});
 
 const lists: Array<IllusListCoverProps> = [
   {
@@ -205,11 +161,11 @@ export function IllusLists({style}: PropsWithStyle): React.ReactElement {
     [currentPosition, scrollView],
   );
   return (
-    <View style={[stylesOfIllusLists.illusLists, style]}>
-      <View style={stylesOfIllusLists.scrollViewWrapper}>
+    <View style={[scss.illus_lists, style]}>
+      <View style={scss.list_view_block}>
         <ScrollView
           ref={scrollView}
-          style={stylesOfIllusLists.scrollView}
+          style={scss.list_view}
           horizontal
           contentContainerStyle={{paddingRight: PaddingHorizontal}}
           onScroll={handleScroll}
@@ -219,7 +175,7 @@ export function IllusLists({style}: PropsWithStyle): React.ReactElement {
           {elems}
         </ScrollView>
       </View>
-      <View style={stylesOfIllusLists.indicatorContainer}>
+      <View style={scss.list_indicator_block}>
         {lists.map((item, index) => {
           const width = animatedScrollX.interpolate({
             inputRange: [
@@ -241,7 +197,7 @@ export function IllusLists({style}: PropsWithStyle): React.ReactElement {
           return (
             <Animated.View
               key={index}
-              style={[stylesOfIllusLists.normalDot, {width, backgroundColor}]}
+              style={[scss.indicator_dot, {width, backgroundColor}]}
             />
           );
         })}
@@ -249,28 +205,3 @@ export function IllusLists({style}: PropsWithStyle): React.ReactElement {
     </View>
   );
 }
-
-const stylesOfIllusLists = StyleSheet.create({
-  illusLists: {
-    width: Layout.width,
-    height: '100%',
-  },
-  scrollViewWrapper: {
-    height: '80%',
-  },
-  scrollView: {
-    paddingTop: 18,
-    paddingLeft: PaddingHorizontal,
-  },
-  indicatorContainer: {
-    ...FlexCenterStyle,
-    marginTop: 5,
-  },
-  normalDot: {
-    height: 5,
-    width: 5,
-    borderRadius: 3,
-    marginHorizontal: 4,
-    backgroundColor: '#c7c7c7',
-  },
-});

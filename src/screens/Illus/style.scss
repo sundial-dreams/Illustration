@@ -1,0 +1,184 @@
+@import "../../styles/global.scss";
+
+.illus_screen {
+  @include screen;
+}
+
+.header_bar {
+  position: absolute;
+  width: 100%;
+  align-items: center;
+  padding-left: $padding-horizontal / 2;
+  background-color: transparent;
+  z-index: 10;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.header_bar_user_block {
+  height: 100%;
+  margin-left: 5px;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+
+.header_bar_avatar_block {
+  flex-direction: row;
+  align-items: center;
+}
+
+.header_bar_username {
+  @include font(16);
+  margin-left: 5px;
+}
+
+.illus_image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  resize-mode: contain;
+}
+
+.body_container {
+  width: 100%;
+  background-color: white;
+}
+
+.content {
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  padding: 0 $padding-horizontal;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.illustrator_block {
+  width: 50%;
+  height: 50px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.avatar_block {
+  margin-right: 10px;
+}
+
+.illustrator_detail_block {
+  height: 100%;
+  justify-content: space-around;
+}
+
+.illustrator_name {
+  @include font(16px);
+}
+
+.operation_block {
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.download_button {
+  margin-right: 10px;
+}
+
+.related_tags_block {
+  margin-top: 10px;
+  padding-left: $padding-horizontal;
+}
+
+.tags {
+  padding: 0 $padding-horizontal 10px $padding-horizontal;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.tag {
+  margin-right: 10px;
+}
+
+.recommended_title {
+  height: 30px;
+  justify-content: center;
+  background-color: white;
+  padding-left: $padding-horizontal;
+}
+
+.cmp_illus_properties {
+  width: 100%;
+  height: 12px;
+  margin-top: 10px;
+  padding: 0 $padding-horizontal;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.illus_data_detail {
+  width: 50%;
+  height: 100%;
+  flex-direction: row;
+}
+
+.data_detail_text {
+  @include font(12, #c7c7c7);
+}
+
+.cpm_progress_bar {
+  height: 2px;
+  width: 0;
+  background-color: black;
+}
+
+.cmp_download_button {
+  width: 100px;
+  height: 30px;
+  border-radius: 20px;
+  background-color: black;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 10px;
+  align-items: center;
+}
+
+.download_button_text {
+  @include font(14px, white);
+}
+
+.download_button_shadow {
+  @include shadow(5px, 0.1);
+}
+
+.cpm_like_button {
+  @extend %flex-center;
+  width: 30px;
+  height: 30px;
+  background-color: black;
+  border-radius: 20px;
+}
+
+.like_button_shadow {
+  @include shadow(5px, 0.1);
+}
+
+///// IllusViewer Screen
+
+.image_viewer_screen {
+  @include screen;
+}
+
+.image_viewer_header_bar {
+  position: absolute;
+  height: 100px;
+  padding: 0 $padding-horizontal;
+  background-color: transparent;
+}
+
+.image_blur_background {
+  @extend %flex-center;
+  width: 100%;
+  height: 100%;
+  resize-mode: cover;
+}

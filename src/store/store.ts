@@ -1,14 +1,16 @@
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
 export interface IUiState {
-  currentScreen: number;
+  currentScreen: string;
+  currentScreenIndex: number;
   openDrawer: boolean;
 }
 
 const UiStateSlice = createSlice({
   name: 'ui_state',
   initialState: {
-    currentScreen: 0,
+    currentScreen: 'Discover',
+    currentScreenIndex: 0,
     openDrawer: false,
   },
   reducers: {
@@ -24,10 +26,17 @@ const UiStateSlice = createSlice({
         openDrawer: action.payload,
       };
     },
+    updateCurrentScreenIndex(state, action) {
+      return {
+        ...state,
+        currentScreenIndex: action.payload,
+      };
+    },
   },
 });
 
-export const {updateCurrentScreen, updateOpenDrawer} = UiStateSlice.actions;
+export const {updateCurrentScreen, updateOpenDrawer, updateCurrentScreenIndex} =
+  UiStateSlice.actions;
 
 export interface IStore {
   uiState: IUiState;

@@ -1,48 +1,44 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Animated,
+  FlatList,
+  GestureResponderEvent,
   ImageBackground,
+  LogBox,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 // @ts-ignore
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 
-import {useRoute} from '@react-navigation/native';
-import {IllusItemType} from '../../components/IllusItem';
-import {Layout} from '../../utils';
-import {BackButton, Tag, Title} from '../../components';
-import {
-  DefaultBackgroundColor,
-  DefaultFontStyle,
-  PaddingHorizontal,
-} from '../../styles';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {ContentWidth, Layout} from '../../utils';
+import {BackButton, Tag, Title} from '../../components/common';
+
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   DownLoadButton,
-  FollowButton,
   IllusProgressBar,
+  IllusProperties,
   LikeButton,
 } from './components';
-import Avatar from '../../components/Avatar';
-import Feed from '../../components/Feed';
+import Avatar from '../../components/common/Avatar';
+import IllusFlatList from '../../components/Lists/IllusFlatList';
+import {FollowButton} from '../../components/common';
+import scss from './style.scss';
+
 import AnimatedValue = Animated.AnimatedValue;
 
+import {feedImages, tagNames} from '../../mock';
+
 const image1 = require('../../assets/images/avatar/avatar1.jpg');
-const tags = [
-  'Re:0',
-  'HuTao',
-  'XinHai',
-  'Yuri',
-  'JK',
-  'Ark',
-  'Genshin Impact',
-  'Honkai 3rd',
-];
+
+const HeaderHeight = 100;
 
 function createAnimatedEventForScrollY(
   animatedValue: AnimatedValue,
@@ -63,11 +59,13 @@ function createAnimatedEventForScrollY(
 
 export default function Illus() {
   const route = useRoute();
+  const navigation = useNavigation();
   const source = (route.params as any).source;
   const dimensions = resolveAssetSource(source);
   const ratio = Layout.width / dimensions.width;
   const insets = useSafeAreaInsets();
   const imageHeight = dimensions.height * ratio;
+  const scrollY = useRef(0);
 
   const scrollViewRef = useRef(null);
 
@@ -75,222 +73,173 @@ export default function Illus() {
 
   const animatedScaleImageValue = useRef(new Animated.Value(0)).current;
 
+  const animatedTranslateYValue = useRef(new Animated.Value(0)).current;
+
   const animatedBackgroundStyle = useMemo(
     () =>
       animatedBackgroundValue.interpolate({
-        inputRange: [0, imageHeight - 80 - 80],
+        inputRange: [0, imageHeight - HeaderHeight - HeaderHeight],
         outputRange: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'],
       }),
     [animatedBackgroundValue, imageHeight],
   );
 
   const animatedScaleImageStyle = useMemo(() => {
-    animatedScaleImageValue.setValue(-80);
+    animatedScaleImageValue.setValue(-HeaderHeight);
     return animatedScaleImageValue.interpolate({
-      inputRange: [-imageHeight, -80],
+      inputRange: [-imageHeight, -HeaderHeight],
       outputRange: [2.8, 1],
     });
   }, [animatedScaleImageValue, imageHeight]);
+
+  const animatedTranslateYStyle = useMemo(() => {
+    animatedTranslateYValue.setValue(HeaderHeight / 2);
+    return animatedTranslateYValue.interpolate({
+      inputRange: [
+        imageHeight - HeaderHeight - HeaderHeight + 40,
+        imageHeight - HeaderHeight - HeaderHeight + 40 + 50,
+      ],
+      outputRange: [50, 0],
+      extrapolate: 'clamp',
+    });
+  }, [animatedTranslateYValue, imageHeight]);
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const backgroundAnimatedEvent = createAnimatedEventForScrollY(
         animatedBackgroundValue,
       );
+
       const scaleAnimatedEvent = createAnimatedEventForScrollY(
         animatedScaleImageValue,
       );
+
+      const translateYAnimatedEvent = createAnimatedEventForScrollY(
+        animatedTranslateYValue,
+      );
+
       backgroundAnimatedEvent(event);
-      if (event.nativeEvent.contentOffset.y < -80) {
+      translateYAnimatedEvent(event);
+
+      if (event.nativeEvent.contentOffset.y < -HeaderHeight) {
         scaleAnimatedEvent(event);
       }
+      scrollY.current = event.nativeEvent.contentOffset.y;
     },
     [animatedBackgroundValue, animatedScaleImageValue],
   );
 
+  const onImageTouch = useCallback(() => {
+    // @ts-ignore
+    navigation.push('IllusViewer', {
+      source,
+      ...dimensions,
+    });
+  }, [source]);
+
+  const onScrollTouchStart = useCallback((event: GestureResponderEvent) => {
+    const y = event.nativeEvent.locationY;
+    const offsetY = scrollY.current;
+    if (
+      y > HeaderHeight &&
+      y < dimensions.height * ratio - offsetY + HeaderHeight
+    ) {
+      onImageTouch();
+    }
+  }, []);
+
   useEffect(() => {
     scrollViewRef.current &&
-      (scrollViewRef.current as any).scrollTo({x: 0, y: -80});
+      (scrollViewRef.current as any).scrollTo({x: 0, y: -HeaderHeight});
   }, []);
 
   return (
-    <View style={styles.illus}>
+    <View style={scss.illus_screen}>
       <Animated.View
         style={[
-          styles.header,
-          {paddingTop: insets.top},
+          scss.header_bar,
+          {paddingTop: insets.top, height: HeaderHeight},
           {backgroundColor: animatedBackgroundStyle},
         ]}>
         <BackButton />
+        <Animated.View
+          style={[
+            scss.header_bar_user_block,
+            {
+              width: ContentWidth - 24,
+              transform: [{translateY: animatedTranslateYStyle}],
+            },
+          ]}>
+          <View style={scss.header_bar_avatar_block}>
+            <Avatar source={image1} size={40} />
+            <Text style={scss.header_bar_username}>sundial-dreams</Text>
+          </View>
+          <FollowButton followed={false} size={14} />
+        </Animated.View>
       </Animated.View>
-      <Animated.Image
-        style={[
-          styles.image,
-          {height: dimensions.height * ratio},
-          {transform: [{scale: animatedScaleImageStyle}]},
-        ]}
-        source={source}
-      />
+      <TouchableWithoutFeedback onPress={onImageTouch}>
+        <View>
+          <Animated.Image
+            style={[
+              scss.illus_image,
+              {height: dimensions.height * ratio},
+              {transform: [{scale: animatedScaleImageStyle}]},
+            ]}
+            source={source}
+          />
+        </View>
+      </TouchableWithoutFeedback>
       <ScrollView
+        onTouchStart={onScrollTouchStart}
         ref={scrollViewRef}
-        style={styles.scrollView}
         stickyHeaderIndices={[1]}
         scrollEventThrottle={1}
         contentContainerStyle={{
-          paddingTop: dimensions.height * ratio - 80,
+          paddingTop: dimensions.height * ratio - HeaderHeight,
         }}
-        contentInset={{top: 80}}
+        contentInset={{top: HeaderHeight}}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}>
-        <View style={styles.illusContent}>
+        <View style={scss.body_container}>
           <IllusProgressBar total={100} current={60} />
-          <View style={styles.illusDetail}>
-            <View style={styles.illusLeftDetail}>
-              <Text style={styles.detailText}>2017-11-04 </Text>
-              <Text style={[styles.detailText, {color: 'black'}]}>| 1.4w</Text>
-              <Text style={styles.detailText}> Browse </Text>
-              <Text style={[styles.detailText, {color: 'black'}]}>| 1.3w</Text>
-              <Text style={styles.detailText}> Like</Text>
-            </View>
-            <View style={styles.illusRightDetail}>
-              <Text style={styles.detailText}>
-                {dimensions.width}x{dimensions.height}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.illusAuthorInfo}>
-            <View style={styles.authorBox}>
-              <View style={styles.avatarWrapper}>
-                <Avatar onTorch={() => {}} source={image1} size={50} />
+          <IllusProperties
+            publishDate={'2021-11-04'}
+            views={122}
+            likes={22}
+            dimensions={dimensions}
+          />
+          <View style={scss.content}>
+            <View style={scss.illustrator_block}>
+              <View style={scss.avatar_block}>
+                <Avatar source={image1} size={50} />
               </View>
-              <View style={styles.authorInfoWrapper}>
-                <Text style={styles.authorNameText}>sundial-dream</Text>
-                <View style={styles.followButtonWrapper}>
+              <View style={scss.illustrator_detail_block}>
+                <Text style={scss.illustrator_name}>sundial-dream</Text>
+                <View>
                   <FollowButton followed={false} />
                 </View>
               </View>
             </View>
-            <View style={styles.operationBox}>
-              <DownLoadButton style={styles.downloadButton} />
+            <View style={scss.operation_block}>
+              <DownLoadButton
+                onTouch={onImageTouch}
+                style={scss.download_button}
+              />
               <LikeButton liked={false} />
             </View>
           </View>
-          <Title style={styles.relatedTags}>Tags</Title>
-          <View style={styles.tags}>
-            {tags.map((v, i) => (
-              <Tag key={i} style={styles.tag}>
+          <Title style={scss.related_tags_block}>Tags</Title>
+          <View style={scss.tags}>
+            {tagNames.map((v, i) => (
+              <Tag key={i} style={scss.tag}>
                 {v}
               </Tag>
             ))}
           </View>
         </View>
-        <Title style={styles.recommended}>Recommended</Title>
-        <Feed />
+        <Title style={scss.recommended_title}>Recommended</Title>
+        <IllusFlatList data={feedImages} />
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  illus: {
-    width: '100%',
-    height: '100%',
-    ...DefaultBackgroundColor,
-  },
-  header: {
-    height: 80,
-    width: '100%',
-    justifyContent: 'center',
-    paddingLeft: PaddingHorizontal / 2,
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    zIndex: 10,
-  },
-  scrollView: {},
-  image: {
-    width: '100%',
-    resizeMode: 'contain',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  illusContent: {
-    width: '100%',
-    backgroundColor: 'white',
-  },
-  illusDetail: {
-    width: '100%',
-    height: 12,
-    marginTop: 10,
-    paddingHorizontal: PaddingHorizontal,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  illusLeftDetail: {
-    width: '50%',
-    height: '100%',
-    flexDirection: 'row',
-  },
-  illusRightDetail: {},
-  detailText: {
-    ...DefaultFontStyle,
-    fontSize: 12,
-    color: '#C7C7C7',
-    fontWeight: 'bold',
-  },
-  illusAuthorInfo: {
-    width: '100%',
-    height: 50,
-    marginTop: 20,
-    paddingHorizontal: PaddingHorizontal,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  authorBox: {
-    width: '50%',
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatarWrapper: {
-    marginRight: 10,
-  },
-  authorInfoWrapper: {
-    height: '100%',
-    justifyContent: 'space-around',
-  },
-  authorNameText: {
-    ...DefaultFontStyle,
-    fontSize: 16,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  followButtonWrapper: {},
-  operationBox: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  downloadButton: {
-    marginRight: 10,
-  },
-  relatedTags: {
-    marginTop: 10,
-    paddingLeft: PaddingHorizontal,
-  },
-  tags: {
-    paddingHorizontal: PaddingHorizontal,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingBottom: 10,
-  },
-  tag: {
-    marginRight: 10,
-  },
-  recommended: {
-    height: 30,
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    paddingLeft: PaddingHorizontal,
-  },
-});

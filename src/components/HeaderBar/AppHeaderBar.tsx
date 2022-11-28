@@ -2,18 +2,19 @@ import React, {useCallback, useMemo} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Avatar from './Avatar';
+import Avatar from '../common/Avatar';
 import {
   DefaultBackgroundColor,
   DefaultFontStyle,
   PaddingHorizontal,
-} from '../styles';
+} from '../../styles';
 import {useDispatch} from 'react-redux';
-import {updateOpenDrawer} from '../store/store';
-import {PropsWithStyle} from '../utils/interface';
+import {updateOpenDrawer} from '../../store/store';
+import {PropsWithStyle} from '../../utils/interface';
 import {useNavigation} from '@react-navigation/native';
+import scss from './style.scss';
 
-const image = require('../assets/images/avatar/avatar0.jpg');
+const image = require('../../assets/images/avatar/avatar0.jpg');
 
 interface IAppHeaderBar {
   title: string;
@@ -28,22 +29,17 @@ export default function AppHeaderBar({
     dispatch(updateOpenDrawer(true));
   }, [dispatch]);
   return (
-    <View style={[styles.headerBar, {paddingTop: insets.top}]}>
+    <View style={[scss.header_bar, {paddingTop: insets.top}]}>
       <Icon
-        style={styles.menu}
+        style={scss.menu}
         name="format-list-checkbox"
         size={24}
         color="black"
         onPress={handleMenuTouch}
         suppressHighlighting={true}
       />
-      <Text style={styles.title}>{title}</Text>
-      <Avatar
-        style={styles.avatar}
-        onTorch={() => {}}
-        source={image}
-        size={40}
-      />
+      <Text style={scss.header_bar_title}>{title}</Text>
+      <Avatar style={scss.avatar} source={image} size={40} />
     </View>
   );
 }
@@ -94,9 +90,8 @@ export function AppHeaderBarWithBackButton({
     navigation.goBack();
   }, [navigation]);
   return (
-    <View
-      style={[styles.headerBarWithBackButton, style, {paddingTop: insets.top}]}>
-      <View style={[styles.backWrapper, {top: insets.top}]}>
+    <View style={[scss.header_bar_normal, style, {paddingTop: insets.top}]}>
+      <View style={[scss.back_button_block, {top: insets.top}]}>
         <Icon
           name={'chevron-left'}
           size={24}
