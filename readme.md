@@ -9,4 +9,4 @@
 yarn install
 npx react-native run ios
 ```
-> 依赖服务端：
+> 依赖服务端：https://github.com/sundial-dreams/IllustService
