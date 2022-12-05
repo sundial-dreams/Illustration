@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTouchBounceAnimated} from '../../utils/hooks';
 import scss from './style.scss';
 
-export function IllusProgressBar({
+export function IllustProgressBar({
   total,
   current,
 }: {total: number; current: number} & PropsWithStyle): React.ReactElement {
@@ -81,7 +81,7 @@ export function LikeButton({
   );
 }
 
-interface IllusPropertiesProps {
+interface IllustPropertiesProps {
   publishDate: string;
   views: number;
   likes: number;
@@ -91,15 +91,15 @@ interface IllusPropertiesProps {
   };
 }
 
-export function IllusProperties({
+export function IllustProperties({
   publishDate,
   views,
   likes,
   dimensions,
-}: IllusPropertiesProps): React.ReactElement {
+}: IllustPropertiesProps): React.ReactElement {
   return (
-    <View style={scss.cmp_illus_properties}>
-      <View style={scss.illus_data_detail}>
+    <View style={scss.cmp_illust_properties}>
+      <View style={scss.illust_data_detail}>
         <Text style={scss.data_detail_text}>{publishDate + ' '}</Text>
         <Text style={[scss.data_detail_text, {color: 'black'}]}>
           | {' ' + views + ' '}

@@ -21,25 +21,25 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
 import {ContentWidth, Layout} from '../../utils';
-import {PropsWithStyle} from '../../utils/interface';
+import {PropsWithOnTouch, PropsWithStyle} from '../../utils/interface';
 import scss from './style.scss';
 
 import AnimatedValue = Animated.AnimatedValue;
+import {useNavigation} from '@react-navigation/native';
 
 const image1 = require('../../assets/images/6.jpg');
 const image2 = require('../../assets/images/4.jpg');
 const image3 = require('../../assets/images/11.jpg');
 
-interface IllusListCoverProps extends PropsWithStyle {
+interface IllusListCoverProps extends PropsWithStyle, PropsWithOnTouch {
   name: string;
   date: string;
   icon: string;
   source: ImageSourcePropType;
   isEnd: boolean;
-  onTouch?: () => void;
 }
 
-export function IllusListCover({
+export function IllustRankingListCover({
   name,
   date,
   icon,
@@ -48,6 +48,13 @@ export function IllusListCover({
   isEnd,
   onTouch,
 }: IllusListCoverProps): React.ReactElement {
+  const navigation = useNavigation();
+
+  const touch = useCallback(() => {
+    // @ts-ignore
+    navigation.navigate('Login');
+  }, []);
+
   return (
     <DropShadow style={scss.cover_shadow}>
       <View
@@ -59,7 +66,7 @@ export function IllusListCover({
           },
           style,
         ]}>
-        <TouchableWithoutFeedback onPress={onTouch}>
+        <TouchableWithoutFeedback onPress={touch}>
           <ImageBackground style={scss.cover_image} source={source}>
             <LinearGradient
               style={scss.cover_content}
@@ -115,11 +122,13 @@ function createAnimatedEventForScrollX(
   });
 }
 
-export function IllusLists({style}: PropsWithStyle): React.ReactElement {
+export function IllustRankingList({style}: PropsWithStyle): React.ReactElement {
   const animatedScrollX = useRef(new Animated.Value(0)).current;
   const [currentPosition, setCurrentPosition] = useState(0);
   const scrollView = useRef(null);
-  const elems = lists.map((value, i) => <IllusListCover {...value} key={i} />);
+  const elems = lists.map((value, i) => (
+    <IllustRankingListCover {...value} key={i} />
+  ));
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const animatedEvent = createAnimatedEventForScrollX(animatedScrollX);

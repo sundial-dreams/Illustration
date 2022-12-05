@@ -1,38 +1,38 @@
 import {
-  IllusImageDataType,
-  IllusImageType,
-} from '../components/Lists/IllusItem';
+  IllustImageDataType,
+  IllustImageType,
+} from '../components/Lists/IllustListItem';
 import {ImageSourcePropType} from 'react-native';
 import {IllusTagCoverProps, IllusCardTypes} from '../screens/Tags/components';
 import {IllustratorListItemProps} from '../screens/Following/components';
 import {IllusSizeType, IllustratorCard} from '../screens/Explore/components';
 
-type DataType = {source: ImageSourcePropType; type: IllusImageType};
+type DataType = {source: ImageSourcePropType; type: IllustImageType};
 
-export const feedImages: Array<Array<IllusImageDataType>> = [
+export const feedImages: Array<Array<IllustImageDataType>> = [
   [
-    {source: require('../assets/images/1.jpg'), type: IllusImageType.Middle},
-    {source: require('../assets/images/9.jpg'), type: IllusImageType.Middle},
+    {source: require('../assets/images/1.jpg'), type: IllustImageType.Middle},
+    {source: require('../assets/images/9.jpg'), type: IllustImageType.Middle},
   ],
   [
-    {source: require('../assets/images/7.jpg'), type: IllusImageType.Small},
+    {source: require('../assets/images/7.jpg'), type: IllustImageType.Small},
     {
       source: require('../assets/images/4.jpg'),
-      type: IllusImageType.MiddleLarge,
+      type: IllustImageType.MiddleLarge,
     },
   ],
-  [{source: require('../assets/images/2.jpg'), type: IllusImageType.Large}],
+  [{source: require('../assets/images/2.jpg'), type: IllustImageType.Large}],
   [
     {
       source: require('../assets/images/11.jpg'),
-      type: IllusImageType.MiddleLarge,
+      type: IllustImageType.MiddleLarge,
     },
-    {source: require('../assets/images/8.jpg'), type: IllusImageType.Small},
+    {source: require('../assets/images/8.jpg'), type: IllustImageType.Small},
   ],
   [
     {
       source: require('../assets/images/5.jpg'),
-      type: IllusImageType.Large,
+      type: IllustImageType.Large,
     },
   ],
 ];

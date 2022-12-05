@@ -8,7 +8,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {DefaultFontStyle, FlexCenterStyle, newShadow} from '../../styles';
 import {PropsWithOnTouch, PropsWithStyle} from '../../utils/interface';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';

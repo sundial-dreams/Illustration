@@ -1,14 +1,17 @@
 import React, {useCallback} from 'react';
 import {FlatList, FlatListProps} from 'react-native';
-import IllusListItem, {IllusImageDataType} from './IllusItem';
+import IllustListItem, {IllustImageDataType} from './IllustListItem';
 
 interface IllusFlatListProps
-  extends Omit<FlatListProps<Array<IllusImageDataType>>, 'renderItem'> {}
+  extends Omit<FlatListProps<Array<IllustImageDataType>>, 'renderItem'> {}
 
-export default function IllusFlatList(
+export default function IllustFlatList(
   props: IllusFlatListProps,
 ): React.ReactElement {
-  const renderItem = useCallback(({item}) => <IllusListItem item={item} />, []);
+  const renderItem = useCallback(
+    ({item}) => <IllustListItem item={item} />,
+    [],
+  );
   return (
     <FlatList
       {...props}

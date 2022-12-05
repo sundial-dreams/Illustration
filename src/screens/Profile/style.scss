@@ -61,6 +61,7 @@
 
 .data_detail_card {
   margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .edit_profile_button_block {
@@ -98,6 +99,7 @@
 .illustrator_avatar_block {
   @extend %flex-center;
   height: 80px;
+  margin-top: 10px;
 }
 
 .illustrator_detail {
@@ -116,7 +118,6 @@
 .illus_count_title_block {
   width: 100%;
   padding: 0 $padding-horizontal 5px $padding-horizontal;
-  margin-top: 15px;
   background-color: white;
 }
 

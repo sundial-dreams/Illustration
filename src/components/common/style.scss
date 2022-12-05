@@ -111,3 +111,35 @@
 .follow_button_shadow {
   @include shadow(10px, 0.2);
 }
+
+.cmp_toast {
+  @extend %flex-center;
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 42px;
+  align-self: center;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #EFEFEF;
+  z-index: 1000;
+}
+
+.toast_wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  flex: 1;
+}
+
+
+.toast_text {
+  @include font(16px, #131313, normal);
+}
+
+.toast_shadow {
+  @include shadow(10px, 0.05)
+}

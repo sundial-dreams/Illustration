@@ -25,7 +25,7 @@ import {
 import {PropsWithStyle} from '../utils/interface';
 import {DefaultFontStyle, FlexCenterStyle, PaddingHorizontal} from '../styles';
 import {ContentWidth, Layout} from '../utils';
-import IllusFlatList from '../components/Lists/IllusFlatList';
+import IllustFlatList from '../components/Lists/IllustFlatList';
 import {
   NavigationState,
   SceneMap,
@@ -152,7 +152,7 @@ function EmbedContextForFeed({style}: PropsWithStyle): React.ReactElement {
   const {scrollEnabled, onScroll, onScrollBeginDrag} =
     useContext(ScrollContext);
   return (
-    <IllusFlatList
+    <IllustFlatList
       scrollEnabled={scrollEnabled}
       onScrollBeginDrag={onScrollBeginDrag}
       onScroll={onScroll}

@@ -1,0 +1,132 @@
+@import "../../styles/global.scss";
+
+.login_screen {
+  @include screen();
+  padding: 60px $padding-horizontal;
+}
+
+.title {
+  width: 100%;
+}
+
+.title_text {
+  @include font(32px, #131313);
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+
+//// sign in ////
+.sign_in {
+  width: 100%;
+}
+
+.sign_in_input_block {
+  width: 100%;
+}
+
+.protocol_block {
+  flex-direction: row;
+  align-items: center;
+}
+
+.protocol_text {
+  @include font(14px, #131313, normal);
+  margin-left: 10px;
+}
+
+.button_group {
+  margin-top: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cmp_go_back_button {
+  @extend %flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: 20px;
+  border: 1px solid #c7c7c7;
+}
+
+.go_back_button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.cmp_input_box {
+  margin-bottom: 20px;
+}
+
+.box_label {
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.label_text {
+  @include font(18px, #131313, normal);
+  margin-left: 5px;
+}
+
+.text_input {
+  @include font(18px, #c7c7c7, normal);
+  width: 100%;
+  height: 40px;
+  background: white;
+  border: 1px solid #EFEFEF;
+  border-radius: 10px;
+  padding: 0 15px;
+}
+
+.cmp_sign_button {
+  @extend %flex-center;
+  height: 35px;
+  border-radius: 10px;
+  background: #131313;
+}
+
+.sign_in_button_text {
+  @include font(16px, white);
+}
+
+.sign_button_shadow {
+  @include shadow(10px, 0.1)
+}
+
+//// sign up ////
+.sign_up {
+  width: 100%;
+}
+
+.sign_up_input_block {
+  width: 100%;
+}
+
+
+//// components ////
+
+.cmp_underline_button {
+
+}
+
+.underline_text {
+  @include font(16px, #c7c7c7, normal);
+  text-decoration: #c7c7c7 underline;
+}
+
+.cmp_check_box {
+  @extend %flex-center;
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
+  border: 1px solid black;
+}
+
+.check_state {
+  width: 12px;
+  height: 12px;
+  border-radius: 10px;
+}

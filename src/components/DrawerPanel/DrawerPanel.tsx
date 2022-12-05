@@ -9,6 +9,8 @@ import {DefaultFontStyle} from '../../styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {IStore, updateOpenDrawer} from '../../store/store';
 import scss from './style.scss';
+import {useLogout} from '../../hooks';
+import {logout} from '../../services/mutation';
 
 const image1 = require('../../assets/images/avatar/avatar0.jpg');
 
@@ -38,6 +40,17 @@ export default function DrawerPanel(): React.ReactElement {
     dispatch(updateOpenDrawer(false));
   }, [openDrawer]);
 
+  const onLogout = useLogout(dispatch);
+
+  const handleLogout = useCallback(() => {
+    logout()
+      .then(() => {
+        dispatch(updateOpenDrawer(false));
+        onLogout();
+      })
+      .catch(errno => console.log(errno));
+  }, [dispatch, onLogout]);
+
   return (
     <View style={[scss.drawer_panel, {paddingTop: inset.top}]}>
       <Avatar source={image1} size={80} onTorch={onAvatarTouch} />
@@ -45,6 +58,12 @@ export default function DrawerPanel(): React.ReactElement {
         <UnderlineButton icon={'cog-outline'}>Setting</UnderlineButton>
         <UnderlineButton style={scss.about_button} icon={'information-outline'}>
           About
+        </UnderlineButton>
+        <UnderlineButton
+          onTouch={handleLogout}
+          style={scss.about_button}
+          icon={'logout'}>
+          Logout
         </UnderlineButton>
       </View>
     </View>

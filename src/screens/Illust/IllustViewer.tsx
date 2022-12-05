@@ -18,7 +18,7 @@ type RouteType = RouteProp<{
   params: {source: ImageSourcePropType; width: number; height: number};
 }>;
 
-export default function IllusViewer(): React.ReactElement {
+export default function IllustViewer(): React.ReactElement {
   const insets = useSafeAreaInsets();
   const route = useRoute<RouteType>();
   const {source, width, height} = route.params;

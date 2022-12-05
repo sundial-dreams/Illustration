@@ -22,14 +22,10 @@ import {
   SceneRendererProps,
 } from 'react-native-tab-view';
 import {ContentWidth} from '../../utils';
-import {
-  DefaultFontStyle,
-  FlexCenterStyle,
-  PaddingHorizontal,
-} from '../../styles';
+import {PaddingHorizontal} from '../../styles';
 import {Route} from 'react-native-tab-view/src/types';
 import {feedImages} from '../../mock';
-import IllusListItem from './IllusItem';
+import IllustListItem from './IllustListItem';
 import scss from './style.scss';
 
 const getTranslateX = (
@@ -103,7 +99,7 @@ export function FlatListTabBar({
     );
   });
   return (
-    <View style={[scss.illus_tab_bar, style]}>
+    <View style={[scss.illust_tab_bar, style]}>
       <Animated.View
         style={[
           scss.tab_item_underline,
@@ -132,7 +128,10 @@ function FlatListScene({
 }: {
   route: {key: string; index: number};
 }): React.ReactElement {
-  const renderItem = useCallback(({item}) => <IllusListItem item={item} />, []);
+  const renderItem = useCallback(
+    ({item}) => <IllustListItem item={item} />,
+    [],
+  );
 
   return (
     <HFlatList

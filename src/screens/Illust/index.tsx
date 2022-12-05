@@ -1,40 +1,31 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+
 import {
   Animated,
   FlatList,
   GestureResponderEvent,
-  ImageBackground,
-  LogBox,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
-  StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
-// @ts-ignore
-import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
-
 import {useNavigation, useRoute} from '@react-navigation/native';
+import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import {ContentWidth, Layout} from '../../utils';
-import {BackButton, Tag, Title} from '../../components/common';
-
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {
-  DownLoadButton,
-  IllusProgressBar,
-  IllusProperties,
-  LikeButton,
-} from './components';
-import Avatar from '../../components/common/Avatar';
-import IllusFlatList from '../../components/Lists/IllusFlatList';
-import {FollowButton} from '../../components/common';
 import scss from './style.scss';
-
 import AnimatedValue = Animated.AnimatedValue;
 
 import {feedImages, tagNames} from '../../mock';
+import {BackButton, FollowButton, Tag, Title} from '../../components/common';
+import Avatar from '../../components/common/Avatar';
+import {
+  DownLoadButton,
+  IllustProgressBar,
+  IllustProperties,
+  LikeButton,
+} from './components';
+import IllustListItem from '../../components/Lists/IllustListItem';
 
 const image1 = require('../../assets/images/avatar/avatar1.jpg');
 
@@ -57,7 +48,9 @@ function createAnimatedEventForScrollY(
   );
 }
 
-export default function Illus() {
+const data = [{key: 'title'}, ...feedImages];
+
+export default function Illust(): React.ReactElement {
   const route = useRoute();
   const navigation = useNavigation();
   const source = (route.params as any).source;
@@ -67,7 +60,7 @@ export default function Illus() {
   const imageHeight = dimensions.height * ratio;
   const scrollY = useRef(0);
 
-  const scrollViewRef = useRef(null);
+  const flatListRef = useRef<FlatList>(null);
 
   const animatedBackgroundValue = useRef(new Animated.Value(0)).current;
 
@@ -131,7 +124,7 @@ export default function Illus() {
 
   const onImageTouch = useCallback(() => {
     // @ts-ignore
-    navigation.push('IllusViewer', {
+    navigation.push('IllustViewer', {
       source,
       ...dimensions,
     });
@@ -149,12 +142,19 @@ export default function Illus() {
   }, []);
 
   useEffect(() => {
-    scrollViewRef.current &&
-      (scrollViewRef.current as any).scrollTo({x: 0, y: -HeaderHeight});
+    flatListRef.current &&
+      (flatListRef.current as any).scrollToOffset({offset: -HeaderHeight});
+  }, []);
+
+  const renderItem = useCallback(({item}) => {
+    if (item.key === 'title') {
+      return <Title style={scss.recommended_title}>Recommended</Title>;
+    }
+    return <IllustListItem item={item} />;
   }, []);
 
   return (
-    <View style={scss.illus_screen}>
+    <View style={scss.illust_screen}>
       <Animated.View
         style={[
           scss.header_bar,
@@ -177,21 +177,20 @@ export default function Illus() {
           <FollowButton followed={false} size={14} />
         </Animated.View>
       </Animated.View>
-      <TouchableWithoutFeedback onPress={onImageTouch}>
-        <View>
-          <Animated.Image
-            style={[
-              scss.illus_image,
-              {height: dimensions.height * ratio},
-              {transform: [{scale: animatedScaleImageStyle}]},
-            ]}
-            source={source}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-      <ScrollView
+      <View>
+        <Animated.Image
+          style={[
+            scss.illust_image,
+            {height: dimensions.height * ratio},
+            {transform: [{scale: animatedScaleImageStyle}]},
+          ]}
+          source={source}
+        />
+      </View>
+      <FlatList
+        keyExtractor={(_, x) => x.toString()}
         onTouchStart={onScrollTouchStart}
-        ref={scrollViewRef}
+        ref={flatListRef}
         stickyHeaderIndices={[1]}
         scrollEventThrottle={1}
         contentContainerStyle={{
@@ -199,47 +198,56 @@ export default function Illus() {
         }}
         contentInset={{top: HeaderHeight}}
         showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}>
-        <View style={scss.body_container}>
-          <IllusProgressBar total={100} current={60} />
-          <IllusProperties
-            publishDate={'2021-11-04'}
-            views={122}
-            likes={22}
-            dimensions={dimensions}
-          />
-          <View style={scss.content}>
-            <View style={scss.illustrator_block}>
-              <View style={scss.avatar_block}>
-                <Avatar source={image1} size={50} />
-              </View>
-              <View style={scss.illustrator_detail_block}>
-                <Text style={scss.illustrator_name}>sundial-dream</Text>
-                <View>
-                  <FollowButton followed={false} />
-                </View>
-              </View>
-            </View>
-            <View style={scss.operation_block}>
-              <DownLoadButton
-                onTouch={onImageTouch}
-                style={scss.download_button}
-              />
-              <LikeButton liked={false} />
-            </View>
+        onScroll={handleScroll}
+        ListHeaderComponent={<IllusContentSection dimensions={dimensions} />}
+        data={data}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+}
+
+interface IllusContentSectionProps {
+  dimensions: {width: number; height: number};
+}
+
+function IllusContentSection(
+  props: IllusContentSectionProps,
+): React.ReactElement {
+  return (
+    <View style={scss.body_container}>
+      <IllustProgressBar total={100} current={60} />
+      <IllustProperties
+        publishDate={'2021-11-04'}
+        views={122}
+        likes={22}
+        dimensions={props.dimensions}
+      />
+      <View style={scss.content}>
+        <View style={scss.illustrator_block}>
+          <View style={scss.avatar_block}>
+            <Avatar source={image1} size={50} />
           </View>
-          <Title style={scss.related_tags_block}>Tags</Title>
-          <View style={scss.tags}>
-            {tagNames.map((v, i) => (
-              <Tag key={i} style={scss.tag}>
-                {v}
-              </Tag>
-            ))}
+          <View style={scss.illustrator_detail_block}>
+            <Text style={scss.illustrator_name}>sundial-dream</Text>
+            <View>
+              <FollowButton followed={false} />
+            </View>
           </View>
         </View>
-        <Title style={scss.recommended_title}>Recommended</Title>
-        <IllusFlatList data={feedImages} />
-      </ScrollView>
+        <View style={scss.operation_block}>
+          <DownLoadButton style={scss.download_button} />
+          <LikeButton liked={false} />
+        </View>
+      </View>
+      <Title style={scss.related_tags_block}>Tags</Title>
+      <View style={scss.tags}>
+        {tagNames.map((v, i) => (
+          <Tag key={i} style={scss.tag}>
+            {v}
+          </Tag>
+        ))}
+      </View>
     </View>
   );
 }

@@ -68,8 +68,8 @@ function IllusImage({
     <ImageBackground
       source={source}
       style={[scss.cpm_illus_image, {width, marginRight: IllusMargin}]}>
-      <View style={scss.illus_image_mask}>
-        <Text style={scss.illus_image_total}>+{total}</Text>
+      <View style={scss.illust_image_mask}>
+        <Text style={scss.illust_image_total}>+{total}</Text>
       </View>
     </ImageBackground>
   );

@@ -15,14 +15,17 @@ import {
   TabView,
 } from 'react-native-tab-view';
 import {PropsWithStyle} from '../utils/interface';
-import {IllusImageDataType, IllusListItem} from '../components/Lists/IllusItem';
+import {
+  IllustImageDataType,
+  IllustListItem,
+} from '../components/Lists/IllustListItem';
 import {Layout} from '../utils';
 
 interface IllusTabViewWithCollapsibleHeaderProps extends PropsWithStyle {
   headerHeight: number;
   headerContent: React.ReactElement;
   tabItems: string[];
-  tabData: Array<Array<Array<IllusImageDataType>>>;
+  tabData: Array<Array<Array<IllustImageDataType>>>;
 }
 
 export default function IllusTabViewWithCollapsibleHeader({

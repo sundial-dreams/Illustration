@@ -1,33 +1,48 @@
 import React, {useCallback} from 'react';
+import {FlatList, View} from 'react-native';
 
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {DefaultBackgroundColor, PaddingHorizontal} from '../../styles';
+import scss from './style.scss';
 import {Layout} from '../../utils';
 import {ExploreIllustratorCard} from './components';
-import {Title} from '../../components/common';
-import IllusFlatList from '../../components/Lists/IllusFlatList';
-import {feedImages} from '../../mock';
 import {useNavigation} from '@react-navigation/native';
-import scss from './style.scss';
+import {feedImages} from '../../mock';
+import IllustListItem from '../../components/Lists/IllustListItem';
+import {Title} from '../../components/common';
 
-export default function Follows(): React.ReactElement {
+function ExploreIllustrator(): React.ReactElement {
   const navigation = useNavigation();
   const onExploreTouch = useCallback(() => {
     // @ts-ignore
     navigation.push('Explore', {});
   }, []);
   return (
+    <View style={scss.explore_card}>
+      <ExploreIllustratorCard onTouch={onExploreTouch} />
+    </View>
+  );
+}
+
+const data = [{key: 'title'}, ...feedImages];
+
+export default function Follows(): React.ReactElement {
+  const renderItem = useCallback(({item}) => {
+    if (item.key === 'title') {
+      return <Title style={scss.title}>Newest</Title>;
+    }
+
+    return <IllustListItem item={item} />;
+  }, []);
+
+  return (
     <View style={[scss.follows_screen, {height: Layout.height - 100}]}>
-      <ScrollView
+      <FlatList
+        ListHeaderComponent={<ExploreIllustrator />}
+        data={data}
+        stickyHeaderIndices={[1]}
+        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 100}}
-        stickyHeaderIndices={[1]}>
-        <View style={scss.explore_card}>
-          <ExploreIllustratorCard onTouch={onExploreTouch} />
-        </View>
-        <Title style={scss.title}>Newest</Title>
-        <IllusFlatList data={feedImages} />
-      </ScrollView>
+        keyExtractor={(_, i) => i.toString()}
+      />
     </View>
   );
 }

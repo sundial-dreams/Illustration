@@ -14,16 +14,16 @@ import {PaddingHorizontal} from '../../styles';
 import {useTouchBounceAnimated} from '../../utils/hooks';
 import scss from './style.scss';
 
-export enum IllusImageType {
+export enum IllustImageType {
   Small,
   Middle,
   MiddleLarge,
   Large,
 }
 
-export type IllusImageDataType = {
+export type IllustImageDataType = {
   source: ImageSourcePropType;
-  type: IllusImageType;
+  type: IllustImageType;
 };
 
 const gap = 10;
@@ -35,32 +35,32 @@ const [small, middle, middleLarge, large] = [
   ContentWidth,
 ];
 
-function useWidthWithType(type: IllusImageType): number {
+function useWidthWithType(type: IllustImageType): number {
   return useMemo(() => {
     switch (type) {
-      case IllusImageType.Small:
+      case IllustImageType.Small:
         return small;
-      case IllusImageType.Middle:
+      case IllustImageType.Middle:
         return middle;
-      case IllusImageType.MiddleLarge:
+      case IllustImageType.MiddleLarge:
         return middleLarge;
-      case IllusImageType.Large:
+      case IllustImageType.Large:
         return large;
     }
   }, [type]);
 }
 
-interface IllusImageProps extends PropsWithStyle {
+interface IllustImageProps extends PropsWithStyle {
   onTouch?: () => void;
   source: ImageSourcePropType;
-  type: IllusImageType;
+  type: IllustImageType;
 }
 
 export function IllusImage({
   source,
   type,
   onTouch,
-}: IllusImageProps): React.ReactElement {
+}: IllustImageProps): React.ReactElement {
   const width = useWidthWithType(type);
   const navigation = useNavigation();
   const scaleAnimatedValue = useRef(new Animated.Value(0)).current;
@@ -71,33 +71,33 @@ export function IllusImage({
 
   const onIllusItemTouch = useCallback(() => {
     // @ts-ignore
-    navigation.push('Illus', {source, type});
+    navigation.push('Illust', {source, type});
     onTouch && onTouch!();
   }, [navigation, onTouch, source, type]);
 
   return (
-    <Animated.View style={[scss.illus_item, {width}, scaleAnimatedStyle]}>
+    <Animated.View style={[scss.illust_item, {width}, scaleAnimatedStyle]}>
       <TouchableWithoutFeedback
         onPress={onIllusItemTouch}
         onPressOut={onTouchOut}
         onPressIn={onTouchIn}>
-        <ImageBackground style={scss.illus_image} source={source} />
+        <ImageBackground style={scss.illust_image} source={source} />
       </TouchableWithoutFeedback>
     </Animated.View>
   );
 }
 
 interface IllusListItemProps extends PropsWithStyle {
-  item: Array<{source: ImageSourcePropType; type: IllusImageType}>;
+  item: Array<{source: ImageSourcePropType; type: IllustImageType}>;
 }
 
-export default function IllusListItem({
+export default function IllustListItem({
   item,
 }: IllusListItemProps): React.ReactElement {
   return (
     <View
       style={[
-        scss.illus_image_container,
+        scss.illust_image_container,
         {paddingHorizontal: PaddingHorizontal, paddingTop: gap},
       ]}>
       {item.map((value, i) => (

@@ -1,7 +1,7 @@
-import {TextStyle, ViewStyle} from 'react-native';
+import {Animated, TextStyle, ViewStyle} from 'react-native';
 
 export interface PropsWithStyle {
-  style?: ViewStyle | TextStyle;
+  style?: ViewStyle | TextStyle | any;
 }
 
 export interface PropsWithOnTouch {

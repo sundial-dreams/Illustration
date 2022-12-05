@@ -100,7 +100,7 @@ export function AppHeaderBarWithBackButton({
           onPress={handleBack}
         />
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={scss.header_bar_title}>{title}</Text>
     </View>
   );
 }

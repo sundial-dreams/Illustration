@@ -1,10 +1,17 @@
-import React from 'react';
-import {StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import React, {useRef} from 'react';
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {ContentWidth} from '../../utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Avatar from '../../components/common/Avatar';
 import {PropsWithStyle} from '../../utils/interface';
 import scss from './style.scss';
+import {useTouchBounceAnimated} from '../../utils/hooks';
 
 const image1 = require('../../assets/images/avatar/avatar0.jpg');
 const image2 = require('../../assets/images/avatar/avatar1.jpg');
@@ -13,9 +20,25 @@ export function ExploreIllustratorCard({
   style,
   onTouch,
 }: {onTouch?: () => void} & PropsWithStyle): React.ReactElement {
+  const scaleAnimatedValue = useRef(new Animated.Value(0)).current;
+
+  const [onTouchIn, onTouchOut, scaleAnimatedStyle] = useTouchBounceAnimated(
+    scaleAnimatedValue,
+    0.97,
+  );
+
   return (
-    <TouchableWithoutFeedback onPress={onTouch}>
-      <View style={[scss.cpm_explore_card, {width: ContentWidth}, style]}>
+    <TouchableWithoutFeedback
+      onPress={onTouch}
+      onPressIn={onTouchIn}
+      onPressOut={onTouchOut}>
+      <Animated.View
+        style={[
+          scss.cpm_explore_card,
+          {width: ContentWidth},
+          scaleAnimatedStyle,
+          style,
+        ]}>
         <Icon
           suppressHighlighting={true}
           name={'account-group'}
@@ -51,7 +74,7 @@ export function ExploreIllustratorCard({
           size={24}
           color={'#c7c7c7'}
         />
-      </View>
+      </Animated.View>
     </TouchableWithoutFeedback>
   );
 }

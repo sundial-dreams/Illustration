@@ -1,7 +1,7 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
 import {SceneMap, TabView} from 'react-native-tab-view';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Provider, useDispatch, useSelector} from 'react-redux';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Drawer from 'react-native-drawer';
+import * as Keychain from 'react-native-keychain';
 
 import Tags from './src/screens/Tags';
 import Home from './src/screens/Home';
@@ -22,8 +23,7 @@ import store from './src/store';
 import AppHeaderBar from './src/components/HeaderBar/AppHeaderBar';
 import {DefaultBackgroundColor} from './src/styles';
 import Find from './src/screens/Find';
-import Follows from './src/screens/Follows';
-import Illus from './src/screens/Illus';
+import Illust from './src/screens/Illust';
 import DrawerPanel from './src/components/DrawerPanel/DrawerPanel';
 import {Layout} from './src/utils';
 import Profile from './src/screens/Profile';
@@ -33,10 +33,14 @@ import TagList from './src/screens/TagList';
 import FindList from './src/screens/FindList';
 import Following from './src/screens/Following';
 import Explore from './src/screens/Explore';
-import IllusViewer from './src/screens/Illus/IllusViewer';
-import ImageTransformer from './src/screens/Test/ImageTransformer';
+import IllustViewer from './src/screens/Illust/IllustViewer';
+import Follows from './src/screens/Follows';
 
-const Stack = createNativeStackNavigator();
+import Login from './src/screens/Login';
+import {useCheckLoginState, useLoadJWTToken} from './src/hooks';
+import useToast, {ToastProvider} from './src/components/common/Toast';
+
+const RootStack = createNativeStackNavigator();
 
 const scenes = SceneMap({
   Home,
@@ -48,7 +52,10 @@ const scenes = SceneMap({
 function Screens(): React.ReactElement {
   const {currentScreenIndex} = useSelector((state: IStore) => state.uiState);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const routes = MainSceneRoutes;
+
+  useCheckLoginState(navigation);
 
   return (
     <>
@@ -74,31 +81,48 @@ function App(): React.ReactElement {
   const handleDrawerClose = useCallback(() => {
     dispatch(updateOpenDrawer(false));
   }, [dispatch]);
+
+  useLoadJWTToken(dispatch);
+
   return (
     <View style={styles.app}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <Drawer
-            type="static"
-            open={openDrawer}
-            onClose={handleDrawerClose}
-            content={<DrawerPanel />}
-            openDrawerOffset={Layout.width / 2}>
-            <Stack.Navigator
-              screenOptions={{headerShown: false}}
-              initialRouteName="App">
-              <Stack.Screen name={'App'} component={Screens} />
-              <Stack.Screen name={'Illus'} component={Illus} />
-              <Stack.Screen name={'Profile'} component={Profile} />
-              <Stack.Screen name={'TagDetail'} component={TagList} />
-              <Stack.Screen name={'FindList'} component={FindList} />
-              <Stack.Screen name={'Following'} component={Following} />
-              <Stack.Screen name={'Explore'} component={Explore} />
-              <Stack.Screen name={'IllusViewer'} component={IllusViewer} />
-              <Stack.Screen name={'Test'} component={Test} />
-            </Stack.Navigator>
-          </Drawer>
-        </NavigationContainer>
+        <ToastProvider>
+          <NavigationContainer>
+            <Drawer
+              type="static"
+              open={openDrawer}
+              onClose={handleDrawerClose}
+              content={<DrawerPanel />}
+              openDrawerOffset={Layout.width / 2}>
+              <RootStack.Navigator
+                screenOptions={{headerShown: false}}
+                initialRouteName="App">
+                <RootStack.Group>
+                  <RootStack.Screen name={'App'} component={Screens} />
+                  <RootStack.Screen name={'Illust'} component={Illust} />
+                  <RootStack.Screen name={'Profile'} component={Profile} />
+                  <RootStack.Screen name={'TagDetail'} component={TagList} />
+                  <RootStack.Screen name={'FindList'} component={FindList} />
+                  <RootStack.Screen name={'Following'} component={Following} />
+                  <RootStack.Screen name={'Explore'} component={Explore} />
+                  <RootStack.Screen
+                    name={'IllustViewer'}
+                    component={IllustViewer}
+                  />
+                  <RootStack.Screen name={'Test'} component={Test} />
+                </RootStack.Group>
+                <RootStack.Group
+                  screenOptions={{
+                    presentation: 'modal',
+                    // gestureEnabled: false,
+                  }}>
+                  <RootStack.Screen name={'Login'} component={Login} />
+                </RootStack.Group>
+              </RootStack.Navigator>
+            </Drawer>
+          </NavigationContainer>
+        </ToastProvider>
       </SafeAreaProvider>
     </View>
   );
